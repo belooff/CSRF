@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account data</title>
+</head>
+<body>
+    <h2>Current account</h2>
+    <p>{{ current_account }}.</p>
+    
+    <h2>Withdraw</h2>
+    <form method="POST" action="/withdraw">
+        <label for="username">Username</label><br />
+        <input type="text" placeholder="Username" name="username" id="username" />
+        
+        <br /><br />
+        
+        <label for="password">Password</label><br />
+        <input type="password" placeholder="Password" name="password" id="password" />
+        
+        <br /><br />
+        
+        <button type="submit">Withdraw</button>
+    </form>
+	
+	<h2>Totally not dangerous link</h2>
+	<p><a href="/danger">I'm not a virus... Click me.</a></p>
+</body>
+</html>
