@@ -1,5 +1,6 @@
 import sqlite3
 import uuid
+import hashlib
 from flask import Flask, request, jsonify, url_for, render_template, make_response, redirect
 
 try:
@@ -14,6 +15,13 @@ app = Flask(__name__)
 app.config['WTF_CSRF_ENABLED'] = False
 
 
+SECRET_KEY = "49018932vn0ghjpios;dl/pqwe679nf"
+
+
+def get_csrf_token(secret):
+    return hashlib.sha256((SECRET_KEY + secret).encode()).hexdigest()
+
+
 @app.route('/', methods=['GET'])
 def main():
     return redirect(url_for('account'))
@@ -24,10 +32,20 @@ def account():
     with Database() as db:
         db.execute("select amount from accounts where username = 'user1'")
         data = db.fetchone()
-    resp = make_response(render_template('account.html', current_account=data[0]))
+
     secret_token = request.cookies.get('secret')
+
     if secret_token is None:
-        resp.set_cookie('secret', str(uuid.uuid4()))
+        secret_token = str(uuid.uuid4())
+
+    csrf_token = get_csrf_token(secret_token)
+
+    resp = make_response(render_template(
+        'account.html', current_account=data[0], csrf_token=csrf_token
+    ))
+
+    resp.set_cookie('secret', secret_token)
+
     return resp
 
 
@@ -35,11 +53,15 @@ def account():
 def withdraw():
     username = request.form.get("username")
     password = request.form.get("password")
+    csrf_token = request.form.get("csrftoken")
     secret = request.cookies.get("secret")
     
     print(username, password, secret)
     
     if username != 'user1' or password != 'password' or not secret:
+        return redirect(url_for('account'))
+
+    if get_csrf_token(secret) != csrf_token:
         return redirect(url_for('account'))
 
     with Database() as db:

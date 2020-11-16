@@ -9,6 +9,7 @@
     
     <h2>Withdraw</h2>
     <form method="POST" action="/withdraw">
+        <input type="hidden" name="csrftoken" value="{{ csrf_token }}">
         <label for="username">Username</label><br />
         <input type="text" placeholder="Username" name="username" id="username" />
         
